@@ -1,0 +1,27 @@
+html {
+  background-color: #fff3bf;
+  text-align: center;
+  font-family: sans-serif;
+  display: block;
+  font-size: 15px;
+  color: crimson;
+}
+.block{
+  padding: 20px;
+}
+#message{
+  margin-top: 40px;
+}
+#button{
+  cursor: pointer;
+  width:180px;
+  height:40px;
+  background-color: beige;
+  border: 2px solid khaki;
+}
+
+.gif img{
+  width: 45px;
+  height: 35px;
+  margin-top: 10px;
+}

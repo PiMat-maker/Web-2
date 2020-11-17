@@ -1,0 +1,19 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-war" name="Lab2a:war exploded">
+    <output-path>$PROJECT_DIR$/out/artifacts/Lab2a_war_exploded</output-path>
+    <root id="root">
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes">
+          <element id="module-output" name="Lab2a" />
+        </element>
+        <element id="directory" name="lib">
+          <element id="library" level="project" name="taglibs-standard-impl-1.2.5" />
+          <element id="library" level="project" name="taglibs-standard-spec-1.2.5" />
+          <element id="library" level="project" name="gson-2.8.6" />
+          <element id="library" level="project" name="javax.json:javax.json-api:1.1.4" />
+        </element>
+      </element>
+      <element id="javaee-facet-resources" facet="Lab2a/web/Web" />
+    </root>
+  </artifact>
+</component>
