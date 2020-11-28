@@ -14,6 +14,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 import javax.json.Json;
@@ -52,8 +53,9 @@ public class Servlet extends HttpServlet {
             session.setAttribute("result", new LinkedList<HashMap<String, String>>());
         LinkedList<HashMap<String, String>> list = cast(session.getAttribute("result"));
         */
+        long start_millis = (Long) req.getAttribute("start_millis");
         LinkedList<HashMap<String, String>> list = bean.getBean();
-
+        SimpleDateFormat sDFormat = new SimpleDateFormat("HH:mm:ss");
 
         for (int i = 0; i < reqX.length; ++i){
 
@@ -67,12 +69,14 @@ public class Servlet extends HttpServlet {
             map.put("y", reqY[i]);
             map.put("R", reqR[i]);
             map.put("result", result);
-            map.put("workTime", "workTime");
-            map.put("currentTime", "currentTime");
+            map.put("workTime", Long.toString(System.currentTimeMillis() - start_millis));
+            map.put("currentTime", sDFormat.format(Calendar.getInstance().getTime()));
             list.add(map);
         }
 
         bean.setBean(list);
+        HttpSession session = req.getSession();
+        session.setAttribute("bean", bean);
         //session.setAttribute("result", list);
         //req.setAttribute("result", bean);
         //req.getRequestDispatcher("index.jsp").forward(req, resp);
@@ -89,21 +93,24 @@ public class Servlet extends HttpServlet {
 
     //check if the point in the area
     private String checkInArea(float x, float y, float R){
-        String res = "&#10060";
+        String res = "false";
 
         //for circle
-        if (ceil(x) <= 0 && ceil(y) <= 0 && x*x + y*y <= R*R){
-            res = "&#9989";
+        if (ceil(x) <= 0 && ceil(y) <= 0 && Float.compare(x*x + y*y, R*R) <= 0){
+            System.out.println(x*x + y*y);
+            res = "true";
         }
 
         //for rectangle
-        if (floor(x) >= 0 && ceil(x) <= R && ceil(y) <= 0 && y + R/2 >= 0){
-            res = "&#9989";
+        if (floor(x) >= 0 && ceil(x) <= R && ceil(y) <= 0 && Float.compare(y, -R/2) >= 0){
+            System.out.println(y);
+            res = "true";
         }
 
         //for triangle
-        if (ceil(x) <= 0 && floor(y) >= 0 && -x + y + R >= 0){
-            res = "&#9989";
+        if (ceil(x) <= 0 && floor(y) >= 0 && Float.compare(-x + y, R) <= 0){
+            System.out.println(x + y);
+            res = "true";
         }
 
         return res;

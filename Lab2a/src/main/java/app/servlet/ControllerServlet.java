@@ -37,6 +37,8 @@ public class ControllerServlet extends HttpServlet {
         System.out.println("Yeah");
 
 
+        long start_millis = System.currentTimeMillis();
+        req.setAttribute("start_millis", start_millis);
         LinkedList<String> x = new LinkedList<>();
         LinkedList<String> y = new LinkedList<>();
         LinkedList<String> R = new LinkedList<>();

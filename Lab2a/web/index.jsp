@@ -1,3 +1,5 @@
+<%@ page import="java.util.HashMap" %>
+<%@ page import="java.util.LinkedList" %>
 <jsp:useBean id="result" class="app.entities.Bean" scope="session" type="app.entities.Bean"/>
 <%@ page errorPage="/error.jsp" %>
 <%--
@@ -8,11 +10,6 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<!--%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %-->
-<%--jsp:useBean id="result" class="app.entities.Bean" scope = "session">
-  <jsp:setProperty name="result" property="Bean" value = "<%= new LinkedList<>()%>"/>
-</jsp:useBean>
-<% request.setAttribute("result", result); %--%>
 <!DOCTYPE HTML >
 <html>
 <title>Веб-программирование</title>
@@ -248,55 +245,30 @@
       <th>Время работы скрипта</th>
       <th>Текущее время</th>
     </tr>
+      <jsp:setProperty name="result" property="bean" value="${sessionScope.bean.bean}"/>
 
-
-    <%-- unknown resp -->
-    <c:set var = "result" value="${resp.getAtribute('result')}" />
-    <c:forEach var = "line" items = "${result}">
-        <tr>
-          <td><!c:out value="${line.key('x')}" /></td>
-          <td><!c:out value="${line.key('y')}" /></td>
-          <td><!c:out value="${line.key('R')}" /></td>
-          <td><!c:out value="${line.key('result')}" /></td>
-          <td><!c:out value="${line.key('workTime')}" /></td>
-          <td><!c:out value="${line.key('currentTime')}" /></td>
-        </tr>
-    <c:forEach>
-    --%>
-      <jsp:setProperty name="result" property="bean" value = "${result.bean}"/>
-      <%--
-      <%= result.getBean().size(); %>
-      <%= result.getBean().isEmpty()%>
-      ${result.bean.size()}
-    <% if (!result.getBean().isEmpty()){
-      LinkedList<HashMap<String, String>> res = result.getBean();
-    %>
-      ${result.bean.size()}
-        <tr>
-      <td>${result.bean.get(0).get("x")}</td>
-      <td><%= res.get(0).get("y") %></td>
-      <td><%= res.get(0).get("R") %></td>
-      <td><%= res.get(0).get("result") %></td>
-      <td><%= res.get(0).get("workTime") %></td>
-      <td><%= res.get(0).get("currentTime") %></td>
-    </tr>
-    <% } %>
-    --%>
-        <% if (request.getAttribute("result") != null){ %>
+      <% if (result.getBean() != null){
+          for (HashMap<String, String> line : result.getBean()){
+              if (line != null){ %>
       <tr>
-          <td>${result.bean.get(0).get("x")}</td>
-          <td>${result.bean.get(0).get("y")}</td>
-          <td>${result.bean.get(0).get("R")}</td>
-          <td>${result.bean.get(0).get("result")}</td>
-          <td>${result.bean.get(0).get("workTime")}</td>
-          <td>${result.bean.get(0).get("currentTime")}</td>
+          <td><%= line.get("x") %></td>
+          <td><%= line.get("y") %></td>
+          <td><%= line.get("R") %></td>
+          <% if (line.get("result").equals("true")) {%>
+          <td> &#9989 </td>
+          <% } else { %>
+          <td> &#10060 </td>
+          <% } %>
+          <td><%= line.get("workTime") %>мс</td>
+          <td><%= line.get("currentTime") %></td>
       </tr>
-        <% } %>
+      <% }
+      }
+    }
+    %>
 
   </table>
 </div>
-
-  <!--jsp:forward page="controllerServlet"/-->
 
 
 <script src = "https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
@@ -326,6 +298,9 @@
               //check if R is set
               const checkedR = document.querySelectorAll("input:checked[name=R]");
               if (checkedR.length === 0){
+                if (document.getElementById("error") == null) {
+                  error("You haven't chosen any value for Radius", 0);
+                }
                 return;
               }
 
@@ -402,11 +377,11 @@
 
     if (val.indexOf(".") !== -1) {
       if (val.slice(0, val.indexOf(".")) >= 3 || val.slice(0, val.indexOf(".")) <= -5) {
-        error("y лежит в интервале (-5; 3)");
+        error("y must be in the interval (-5; 3)");
         return false;
       }
     } else if (val <= -5 || val >= 3) {
-      error("y лежит в интервале (-5; 3)");
+      error("y must be in the interval (-5; 3)");
       return false;
     }
 
@@ -492,7 +467,6 @@
             console.log("Ok");
           },
           500: function () {
-
             window.location.replace("error.jsp");
           }
         }
@@ -517,8 +491,12 @@
       data += "<td>" + res[i]["x"] + "</td>";
       data += "<td>" + res[i]["y"] + "</td>";
       data += "<td>" + res[i]["R"] + "</td>";
-      data += "<td>" + res[i]["result"] + "</td>";
-      data += "<td>" + res[i]["workTime"] + "</td>";
+      if (res[i]["result"] === "true") {
+          data += "<td> &#9989 </td>";
+      } else{
+          data += "<td> &#10060 </td>";
+      }
+      data += "<td>" + res[i]["workTime"] + "мс </td>";
       data += "<td>" + res[i]["currentTime"] + "</td>";
       data += "</tr>";
     }

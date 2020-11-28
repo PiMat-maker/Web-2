@@ -6,19 +6,19 @@ public class Validation {
 
     private BigDecimal minLimit;
     private BigDecimal maxLimit;
-    private boolean isValX;
+    private boolean isInterval;
 
-    public Validation(float minLimit, float maxLimit, boolean isValX){
+    public Validation(float minLimit, float maxLimit, boolean isInterval){
         this.minLimit = new BigDecimal(minLimit);
         this.maxLimit = new BigDecimal(maxLimit);
-        this.isValX = isValX;
+        this.isInterval = isInterval;
     }
 
     public boolean validate(String val){
         if (val == null) return false;
 
         //check if the value is X
-        if (isValX){
+        if (isInterval){
             try {
                 BigDecimal x = BigDecimal.valueOf(Float.parseFloat(val));
                 if (x.compareTo(maxLimit) >= 0 || x.compareTo(minLimit) <= 0) return false;
