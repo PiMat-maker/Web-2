@@ -1,7 +1,5 @@
 package app.servlet;
 
-import app.exception.ShowException;
-import app.exception.WebException;
 import app.functions.Validation;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -17,19 +15,14 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static java.lang.Math.ceil;
-import static java.lang.Math.floor;
+import static java.lang.Math.*;
+
 @WebServlet("/controllerServlet")
 @MultipartConfig
 public class ControllerServlet extends HttpServlet {
 
-    @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
-        //RequestDispatcher requestDispatcher = req.getRequestDispatcher("index.jsp");
-        //requestDispatcher.forward(req, resp);
-        throw new ShowException(WebException.METHOD_DOES_NOT_AVAILABLE);
-    }
+    //@Override
+    //protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {}
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -43,25 +36,30 @@ public class ControllerServlet extends HttpServlet {
         LinkedList<String> y = new LinkedList<>();
         LinkedList<String> R = new LinkedList<>();
 
+
         //read items
-        Part part = req.getPart("x[0]");
         int size = 0;
         try {
+            Part part = req.getPart("x[0]");
             while (part != null) {
                 x.add(new BufferedReader(new InputStreamReader(part.getInputStream()))
                         .lines().collect(Collectors.joining("\n")));
                 size += 1;
                 part = req.getPart("x[" + size + "]");
             }
+            System.out.println("x");
             for (int i = 0; i < size; ++i) {
                 y.add(new BufferedReader(new InputStreamReader(req.getPart("y[" + i + "]").getInputStream()))
                         .lines().collect(Collectors.joining("\n")));
+                System.out.println("y");
                 R.add(new BufferedReader(new InputStreamReader(req.getPart("R[" + i + "]").getInputStream()))
                         .lines().collect(Collectors.joining("\n")));
                 System.out.println(i);
+                System.out.println("R");
             }
-        } catch (NullPointerException e){
-            throw new ShowException(WebException.WRONG_NUMBER_OF_ARGUMENTS);
+        } catch(NullPointerException ex){
+            System.out.println("NULLPOINTER");
+            size = min(y.size(), R.size());
         }
 
         String[] reqX = {};
@@ -69,12 +67,12 @@ public class ControllerServlet extends HttpServlet {
         String[] reqR = {};
 
         for (int i = 0; i < size; ++i) {
-            Validation validation = new Validation(-11, 11, false);
-            if (!validation.validate(x.get(i))) throw new ShowException(WebException.X_IS_INVALID);
-            validation = new Validation(-11, 11, true);
-            if (!validation.validate(y.get(i))) throw new ShowException(WebException.Y_IS_INVALID);
+            Validation validation = new Validation(-7, 7, false);
+            if (!validation.validate(x.get(i))) continue;
+            validation = new Validation(-5, 3, true);
+            if (!validation.validate(y.get(i))) continue;
             validation = new Validation(1, 5, false);
-            if (!validation.validate(R.get(i))) throw new ShowException(WebException.RADIUS_IS_INVALID);
+            if (!validation.validate(R.get(i))) continue;
                 reqX = addElement(reqX, x.get(i));
                 reqY = addElement(reqY, y.get(i));
                 reqR = addElement(reqR, R.get(i));

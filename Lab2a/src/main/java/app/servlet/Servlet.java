@@ -1,8 +1,7 @@
 package app.servlet;
 
 import app.entities.Bean;
-import app.exception.ShowException;
-import app.exception.WebException;
+import app.functions.Validation;
 import com.google.gson.Gson;
 
 import javax.json.JsonArrayBuilder;
@@ -29,13 +28,8 @@ public class Servlet extends HttpServlet {
 
 
     Bean bean = new Bean();
-    @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
-        //RequestDispatcher requestDispatcher = req.getRequestDispatcher("index.jsp");
-        //requestDispatcher.forward(req, resp);
-        throw new ShowException(WebException.METHOD_DOES_NOT_AVAILABLE);
-    }
+    //@Override
+    //protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {}
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

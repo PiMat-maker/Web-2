@@ -1,7 +1,6 @@
 <%@ page import="java.util.HashMap" %>
 <%@ page import="java.util.LinkedList" %>
 <jsp:useBean id="result" class="app.entities.Bean" scope="session" type="app.entities.Bean"/>
-<%@ page errorPage="/error.jsp" %>
 <%--
   Created by IntelliJ IDEA.
   User: piros
@@ -291,10 +290,6 @@
               const x = String(ev.clientX - target.left - padding_left - border_width_left);
               const y = String(ev.clientY - target.top - padding_top - border_width_top);
 
-              //set point
-              document.getElementById("target-dot").setAttribute("cx", x);
-              document.getElementById("target-dot").setAttribute("cy", y);
-
               //check if R is set
               const checkedR = document.querySelectorAll("input:checked[name=R]");
               if (checkedR.length === 0){
@@ -306,6 +301,17 @@
 
               let valX = (parseInt(x) - 150)/100;
               let valY = -(parseInt(y) - 150)/100;
+              if (Math.abs(valY) > 1.4 || Math.abs(valX) > 1.4){
+                if (document.getElementById("error") == null) {
+                  error("The point isn't on the coordinate plane", 0);
+                }
+                return;
+              }
+
+              //set point
+              document.getElementById("target-dot").setAttribute("cx", x);
+              document.getElementById("target-dot").setAttribute("cy", y);
+
               const form = makeForm(valX, valY, checkedR, 1);
               sendForm(form);
             }));
@@ -421,7 +427,6 @@
 
 
   function onclick(){
-    //window.location.replace("error.jsp");
     const valX = document.querySelector("input:checked[name=x]").getAttribute("value");
     const valY = document.querySelector("#text_field").value;
     const checkedR = document.querySelectorAll("input:checked[name=R]");
@@ -465,9 +470,6 @@
         statusCode: {
           200: function () {
             console.log("Ok");
-          },
-          500: function () {
-            window.location.replace("error.jsp");
           }
         }
       });
