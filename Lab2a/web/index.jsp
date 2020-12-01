@@ -1,5 +1,6 @@
 <%@ page import="java.util.HashMap" %>
 <%@ page import="java.util.LinkedList" %>
+<%@ page import="app.entities.ElemBean" %>
 <jsp:useBean id="result" class="app.entities.Bean" scope="session" type="app.entities.Bean"/>
 <%--
   Created by IntelliJ IDEA.
@@ -247,19 +248,19 @@
       <jsp:setProperty name="result" property="bean" value="${sessionScope.bean.bean}"/>
 
       <% if (result.getBean() != null){
-          for (HashMap<String, String> line : result.getBean()){
+          for (ElemBean line : result.getBean()){
               if (line != null){ %>
       <tr>
-          <td><%= line.get("x") %></td>
-          <td><%= line.get("y") %></td>
-          <td><%= line.get("R") %></td>
-          <% if (line.get("result").equals("true")) {%>
+          <td><%= line.getX() %></td>
+          <td><%= line.getY() %></td>
+          <td><%= line.getR() %></td>
+          if (line.getResult()) {
           <td> &#9989 </td>
-          <% } else { %>
+          } else {
           <td> &#10060 </td>
-          <% } %>
-          <td><%= line.get("workTime") %>мс</td>
-          <td><%= line.get("currentTime") %></td>
+          }
+          <td><%= line.getWorkTime() %>мс</td>
+          <td><%= line.getCurrentTime() %></td>
       </tr>
       <% }
       }
@@ -493,7 +494,7 @@
       data += "<td>" + res[i]["x"] + "</td>";
       data += "<td>" + res[i]["y"] + "</td>";
       data += "<td>" + res[i]["R"] + "</td>";
-      if (res[i]["result"] === "true") {
+      if (res[i]["result"] === true) {
           data += "<td> &#9989 </td>";
       } else{
           data += "<td> &#10060 </td>";

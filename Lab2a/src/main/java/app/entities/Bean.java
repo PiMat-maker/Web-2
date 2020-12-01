@@ -6,17 +6,17 @@ import java.util.LinkedList;
 
 public class Bean implements Serializable {
 
-    private LinkedList<HashMap<String, String>> bean;
+    private LinkedList<ElemBean> bean;
 
     public Bean(){
         this.bean = new LinkedList<>();
     }
 
-    public void setBean(LinkedList<HashMap<String, String>> bean){
+    public void setBean(LinkedList<ElemBean> bean){
         this.bean = bean;
     }
 
-    public LinkedList<HashMap<String, String>> getBean(){
+    public LinkedList<ElemBean> getBean(){
         return bean;
     }
 

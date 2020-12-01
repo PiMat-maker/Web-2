@@ -14,13 +14,12 @@ public class Validation {
         this.isInterval = isInterval;
     }
 
-    public boolean validate(String val){
-        if (val == null) return false;
+    public boolean validate(float val){
 
         //check if the value is X
         if (isInterval){
             try {
-                BigDecimal x = BigDecimal.valueOf(Float.parseFloat(val));
+                BigDecimal x = BigDecimal.valueOf(val);
                 if (x.compareTo(maxLimit) >= 0 || x.compareTo(minLimit) <= 0) return false;
             } catch(NumberFormatException e){
                 System.out.println("X isn't a number");
@@ -30,7 +29,7 @@ public class Validation {
             try {
 
                 //try to parse to float
-                BigDecimal value = BigDecimal.valueOf(Float.parseFloat(val));
+                BigDecimal value = BigDecimal.valueOf(val);
 
                 //check if val out of the interval
                 if (value.compareTo(maxLimit) > 0 || value.compareTo(minLimit) < 0) return false;

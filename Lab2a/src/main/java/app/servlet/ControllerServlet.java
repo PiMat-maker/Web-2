@@ -1,9 +1,6 @@
 package app.servlet;
 
 import app.functions.Validation;
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -11,7 +8,6 @@ import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -32,9 +28,9 @@ public class ControllerServlet extends HttpServlet {
 
         long start_millis = System.currentTimeMillis();
         req.setAttribute("start_millis", start_millis);
-        LinkedList<String> x = new LinkedList<>();
-        LinkedList<String> y = new LinkedList<>();
-        LinkedList<String> R = new LinkedList<>();
+        LinkedList<Float> x = new LinkedList<>();
+        LinkedList<Float> y = new LinkedList<>();
+        LinkedList<Float> R = new LinkedList<>();
 
 
         //read items
@@ -42,29 +38,27 @@ public class ControllerServlet extends HttpServlet {
         try {
             Part part = req.getPart("x[0]");
             while (part != null) {
-                x.add(new BufferedReader(new InputStreamReader(part.getInputStream()))
-                        .lines().collect(Collectors.joining("\n")));
+                x.add(Float.parseFloat(new BufferedReader(new InputStreamReader(part.getInputStream()))
+                        .lines().collect(Collectors.joining("\n"))));
                 size += 1;
                 part = req.getPart("x[" + size + "]");
             }
-            System.out.println("x");
             for (int i = 0; i < size; ++i) {
-                y.add(new BufferedReader(new InputStreamReader(req.getPart("y[" + i + "]").getInputStream()))
-                        .lines().collect(Collectors.joining("\n")));
-                System.out.println("y");
-                R.add(new BufferedReader(new InputStreamReader(req.getPart("R[" + i + "]").getInputStream()))
-                        .lines().collect(Collectors.joining("\n")));
-                System.out.println(i);
-                System.out.println("R");
+                String s =new BufferedReader(new InputStreamReader(req.getPart("y[" + i + "]").getInputStream()))
+                        .lines().collect(Collectors.joining("\n"));
+                y.add(Float.parseFloat(s.substring(0, min(s.length(), 8))));
+                System.out.println(y.get(i));
+                R.add(Float.parseFloat(new BufferedReader(new InputStreamReader(req.getPart("R[" + i + "]").getInputStream()))
+                        .lines().collect(Collectors.joining("\n"))));
             }
         } catch(NullPointerException ex){
             System.out.println("NULLPOINTER");
             size = min(y.size(), R.size());
         }
 
-        String[] reqX = {};
-        String[] reqY = {};
-        String[] reqR = {};
+        float[] reqX = {};
+        float[] reqY = {};
+        float[] reqR = {};
 
         for (int i = 0; i < size; ++i) {
             Validation validation = new Validation(-7, 7, false);
@@ -82,16 +76,13 @@ public class ControllerServlet extends HttpServlet {
             RequestDispatcher requestDispatcher = req.getRequestDispatcher("index.jsp");
             requestDispatcher.forward(req, resp);
         }
-        for (String str : reqY){
-            System.out.println("This =" + str);
-        }
         req.setAttribute("x", reqX);
         req.setAttribute("y", reqY);
         req.setAttribute("R", reqR);
         req.getRequestDispatcher("Servlet").forward(req, resp);
     }
 
-    static String[] addElement(String[] strings, String val){
+    static float[] addElement(float[] strings, Float val){
         strings = Arrays.copyOf(strings, strings.length + 1);
         strings[strings.length - 1] = val;
         return strings;
